@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Your Cart</h2>
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .cart-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .remove-btn {
+            background-color: red;
+        }
+
+        .remove-btn:hover {
+            background-color: darkred;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        hr {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+{% for item in cart.items.all %}
+    <p>
+        {{ item.product.name }} -
+        ₹{{ item.product.price }} 
+        {{ item.quantity }} =
+        ₹{{ item.total_price }}
+    </p>
+
+    <form action="{% url 'update_cart' item.id %}" method="post">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+        <button type="submit">Update</button>
+    </form>
+    
+    <form action="{% url 'remove_item' item.id %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit">Remove</button>
+    </form>
+
+   
+    <hr>
+{% empty %}
+    <p>Cart is empty</p>
+{% endfor %}
+
+<h3>Total: ₹{{ cart.total_price }}</h3>
+
+<a href="{% url 'product_list' %}">Back to Products</a>
+</body>
+</html>
